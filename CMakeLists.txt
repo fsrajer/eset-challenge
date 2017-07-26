@@ -29,6 +29,8 @@ endmacro(EC_ADD_TEST)
   
 add_executable(eset-challenge 
 				src/main.cpp
+				src/pattern_search.h 
+				src/pattern_search.cpp
 )
 
 EC_ADD_TEST(dummy_test src/dummy_test.cpp)
