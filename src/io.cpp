@@ -40,3 +40,40 @@ void deleteFile(const string& filename) {
     throw std::runtime_error("Could not delete file.");
   }
 }
+
+void listAllFiles(const string& filenameOrDirectory, 
+  vector<string> *filenames) {
+  
+  filenames->clear();
+  listAllFilesInternal(filenameOrDirectory, filenames);
+}
+
+bool isFile(const string& filename) {
+
+}
+
+bool isDir(const string& directory) {
+
+}
+
+void listAllFilesInDir(const string& directory, vector<string> *pfilenames) {
+
+  auto& filenames = *pfilenames;
+
+}
+
+void listAllFilesInternal(const string& filenameOrDirectory,
+  vector<string> *pfilenames) {
+
+  auto& filenamesOut = *pfilenames;
+  if (isFile(filenameOrDirectory)) {
+    filenamesOut.push_back(filenameOrDirectory);
+  }
+  else if (isDir(filenameOrDirectory)) {
+    vector<string> candidates;
+    listAllFilesInDir(filenameOrDirectory, &candidates);
+    for (const auto& candidate : candidates) {
+      listAllFilesInternal(candidate, &filenamesOut);
+    }
+  }
+}
