@@ -21,3 +21,7 @@ void formatResult(const string& filename, int position,
 /// Output in the final format
 void findPatternInFile(const string& pattern, const string& filename,
   vector<string> *output);
+
+/// Output in the final format
+void findPatternInFileOrDirectory(const string& pattern,
+  const string& filenameOrDirectory, vector<string> *output);
