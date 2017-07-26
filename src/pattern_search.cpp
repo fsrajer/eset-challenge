@@ -1,6 +1,9 @@
 #include "pattern_search.h"
 
 #include <algorithm>
+#include <iostream>
+
+#include "io.h"
 
 void findPatternInText(const string& pattern, const string& text,
   vector<int> *ppositions) {
@@ -32,4 +35,35 @@ string extractPrefix(const string& text, int patternStartIdx) {
 string extractSuffix(const string& text, int patternEndIdx) {
   return text.substr(patternEndIdx, 
     std::min(3, static_cast<int>(text.size()) - patternEndIdx));
+}
+
+void formatResult(const string& filename, int position,
+  const string& prefix, const string& suffix, string *result) {
+  *result = filename + "(" + std::to_string(position) + "):"
+    + prefix + "..." + suffix;
+}
+
+void findPatternInFile(const string& pattern, const string& filename,
+  vector<string> *poutput) {
+
+  auto& output = *poutput;
+  output.clear();
+
+  try {
+    string text;
+    readFile(filename, &text);
+
+    vector<int> positions;
+    findPatternInText(pattern, text, &positions);
+    output.resize(positions.size());
+
+    for (size_t i = 0; i < positions.size(); i++) {
+      int position = positions[i];
+      formatResult(filename, position, extractPrefix(text, position),
+        extractSuffix(text, position + pattern.size()), &output[i]);
+    }
+  }
+  catch (std::runtime_error err) {
+    std::cerr << err.what() << "\n  " << filename << "\n";
+  }
 }

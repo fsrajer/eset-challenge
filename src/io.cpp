@@ -22,3 +22,21 @@ void readFile(const string &filename, string *text) {
 
   file.close();
 }
+
+void writeFile(const string& filename, const string& text) {
+  std::ofstream file(filename);
+  
+  if (!file.is_open()) {
+    throw std::runtime_error("Could not open file.");
+  }
+
+  file << text;
+  file.close();
+}
+
+void deleteFile(const string& filename) {
+  int exitCode = std::remove(filename.c_str());
+  if (exitCode != 0) {
+    throw std::runtime_error("Could not delete file.");
+  }
+}

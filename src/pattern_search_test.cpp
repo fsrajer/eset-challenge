@@ -2,6 +2,7 @@
 #include "catch.hpp"
 
 #include "pattern_search.h"
+#include "io.h"
 
 TEST_CASE("findPatternInText test") {
   string pattern(""), text("");
@@ -69,4 +70,43 @@ TEST_CASE("prefix/suffix test") {
   pos -= 2;
   suffix = extractSuffix(text, pos);
   REQUIRE(suffix == "g\n");
+}
+
+TEST_CASE("findPatternInFile test") {
+  string pattern(""), text(""), filename("");
+  vector<string> output;
+
+  SECTION("everything empty") {
+    findPatternInFile(pattern, filename, &output);
+    REQUIRE(output.empty());
+  }
+
+  SECTION("output called non-empty") {
+    output.resize(10);
+    findPatternInFile(pattern, filename, &output);
+    REQUIRE(output.empty());
+  }
+
+  text = "abcd efg\n__abc";
+  filename = "tmp-test-file.txt";
+  REQUIRE_NOTHROW(writeFile(filename, text));
+
+  SECTION("empty pattern") {
+    findPatternInFile(pattern, filename, &output);
+    CHECK(output.empty());
+  }
+  
+  string goodOutput;
+
+  SECTION("one character") {
+    pattern = "a";
+    findPatternInFile(pattern, filename, &output);
+    CHECK(output.size() == 2);
+    formatResult(filename, 0, "", "bcd", &goodOutput);
+    CHECK(output[0] == goodOutput);
+    formatResult(filename, 11, "\n__", "bc", &goodOutput);
+    CHECK(output[1] == goodOutput);
+  }
+
+  REQUIRE_NOTHROW(deleteFile(filename));
 }

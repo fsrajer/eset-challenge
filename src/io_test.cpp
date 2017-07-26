@@ -6,13 +6,6 @@
 
 #include "io.h"
 
-void writeFile(const string& filename, const string& text) {
-  std::ofstream file(filename);
-  REQUIRE(file.is_open());
-  file << text;
-  file.close();
-}
-
 TEST_CASE("readFile test") {
   string filename(""), text("");
 
@@ -33,17 +26,17 @@ TEST_CASE("readFile test") {
   filename = "tmp-test-file.txt";
 
   SECTION("empty file") {
-    writeFile(filename, "");
+    REQUIRE_NOTHROW(writeFile(filename, ""));
     readFile(filename, &text);
-    CHECK(std::remove(filename.c_str()) == 0);
+    CHECK_NOTHROW(deleteFile(filename));
     REQUIRE(text.empty());
   }
 
   SECTION("good file") {
     string origText = "Lorem ipsum dolor sit amet,\n consectetur adipiscing";
-    writeFile(filename, origText);
+    REQUIRE_NOTHROW(writeFile(filename, origText));
     readFile(filename, &text);
-    CHECK(std::remove(filename.c_str()) == 0);
+    CHECK_NOTHROW(deleteFile(filename));
     REQUIRE(text == origText);
   }
 }
