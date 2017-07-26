@@ -1,5 +1,6 @@
 #include "io.h"
 
+#include <windows.h>
 #include <fstream>
 #include <exception>
 
@@ -49,31 +50,44 @@ void listAllFiles(const string& filenameOrDirectory,
 }
 
 bool isFile(const string& filename) {
-
+  DWORD attrib = GetFileAttributes(filename.c_str());
+  return (attrib != INVALID_FILE_ATTRIBUTES &&
+    !(attrib & FILE_ATTRIBUTE_DIRECTORY));
 }
 
 bool isDir(const string& directory) {
-
+  DWORD attrib = GetFileAttributes(directory.c_str());
+  return (attrib != INVALID_FILE_ATTRIBUTES &&
+    (attrib & FILE_ATTRIBUTE_DIRECTORY));
 }
 
 void listAllFilesInDir(const string& directory, vector<string> *pfilenames) {
 
   auto& filenames = *pfilenames;
 
+  WIN32_FIND_DATA data;
+  HANDLE hFind = FindFirstFile((directory + "/*").c_str(), &data);
+
+  if (hFind != INVALID_HANDLE_VALUE) {
+    do {
+      filenames.push_back(data.cFileName);
+    } while (FindNextFile(hFind, &data));
+    FindClose(hFind);
+  }
 }
 
 void listAllFilesInternal(const string& filenameOrDirectory,
   vector<string> *pfilenames) {
 
   auto& filenamesOut = *pfilenames;
-  if (isFile(filenameOrDirectory)) {
-    filenamesOut.push_back(filenameOrDirectory);
-  }
-  else if (isDir(filenameOrDirectory)) {
+  if (isDir(filenameOrDirectory)) {
     vector<string> candidates;
     listAllFilesInDir(filenameOrDirectory, &candidates);
     for (const auto& candidate : candidates) {
       listAllFilesInternal(candidate, &filenamesOut);
     }
+  } 
+  else if (isFile(filenameOrDirectory)) {
+    filenamesOut.push_back(filenameOrDirectory);
   }
 }

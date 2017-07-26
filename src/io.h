@@ -16,3 +16,7 @@ void listAllFiles(const string& filenameOrDirectory,
   vector<string> *filenames); 
 void listAllFilesInternal(const string& filenameOrDirectory,
   vector<string> *filenames);
+
+bool isFile(const string& filename);
+bool isDir(const string& directory);
+void listAllFilesInDir(const string& directory, vector<string> *pfilenames);
