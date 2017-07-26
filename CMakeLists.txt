@@ -20,6 +20,8 @@ target_include_directories(catch INTERFACE ${CATCH_INCLUDE_DIR})
 add_library(eset-challenge 
 			  src/pattern_search.h 
 			  src/pattern_search.cpp
+			  src/io.h 
+			  src/io.cpp 
 )
 
 # EC as in Eset Challenge
@@ -35,6 +37,8 @@ endmacro(EC_ADD_TEST)
   
 EC_ADD_TEST(pattern_search_test 
 			  src/pattern_search_test.cpp)
+EC_ADD_TEST(io_test 
+			  src/io_test.cpp)
 
 install(TARGETS eset-challenge 
 		DESTINATION lib)
