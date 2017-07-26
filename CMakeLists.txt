@@ -33,7 +33,8 @@ macro(EC_ADD_TEST TARGET_NAME)
 			DESTINATION test)
 endmacro(EC_ADD_TEST)
   
-EC_ADD_TEST(dummy_test src/dummy_test.cpp)
+EC_ADD_TEST(pattern_search_test 
+			  src/pattern_search_test.cpp)
 
 install(TARGETS eset-challenge 
 		DESTINATION lib)
