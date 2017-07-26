@@ -83,11 +83,22 @@ void listAllFilesInDir(const string& directory, vector<string> *pfilenames) {
   auto& filenames = *pfilenames;
 
   WIN32_FIND_DATA data;
-  HANDLE hFind = FindFirstFile((directory + "/*").c_str(), &data);
+  string directorySlash = directory;
+  if (!directorySlash.empty() && 
+    directorySlash.back() != '/' && 
+    directorySlash.back() != '\\') {
+
+    directorySlash  += "/";
+  }
+
+  HANDLE hFind = FindFirstFile((directorySlash + "*").c_str(), &data);
 
   if (hFind != INVALID_HANDLE_VALUE) {
     do {
-      filenames.push_back(data.cFileName);
+      string currFilename(data.cFileName);
+      if (currFilename != "." && currFilename != "..") {
+        filenames.push_back(directorySlash + currFilename);
+      }
     } while (FindNextFile(hFind, &data));
     FindClose(hFind);
   }

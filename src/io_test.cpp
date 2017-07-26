@@ -61,3 +61,34 @@ TEST_CASE("isDir/isFile test") {
   CHECK(isDir(directory));
   CHECK_NOTHROW(deleteDir(directory));
 }
+
+TEST_CASE("list files in directory test") {
+
+  string directory = "tmp-test-dir";
+  string directoryInner = directory + "/" + directory;
+  vector<string> filenames;
+  for (size_t i = 0; i < 4; i++) {
+    filenames.push_back(directory + "/tmp-test-file" + std::to_string(i));
+    filenames.push_back(directoryInner + "/tmp-test-file" + std::to_string(i));
+  }
+  
+  CHECK_NOTHROW(createDir(directory));
+  CHECK_NOTHROW(createDir(directoryInner));
+  for (const auto& fn : filenames) {
+    CHECK_NOTHROW(writeFile(fn, ""));
+  }
+
+  vector<string> filenamesListed;
+  listAllFilesInDir(directory, &filenamesListed);
+  CHECK(filenamesListed.size() == (1 + filenames.size() / 2));
+
+  filenamesListed.clear();
+  listAllFiles(directory, &filenamesListed);
+  CHECK(filenamesListed.size() == filenames.size());
+
+  for (const auto& fn : filenames) {
+    CHECK_NOTHROW(deleteFile(fn));
+  }
+  CHECK_NOTHROW(deleteDir(directoryInner));
+  CHECK_NOTHROW(deleteDir(directory));
+}
