@@ -1,6 +1,8 @@
 #include "pattern_search.h"
 
-void findPattern(const string& pattern, const string& text,
+#include <algorithm>
+
+void findPatternInText(const string& pattern, const string& text,
   vector<int> *ppositions) {
   
   auto& positions = *ppositions;
@@ -20,4 +22,14 @@ void findPattern(const string& pattern, const string& text,
     if (found)
       positions.push_back(i);
   }
+}
+
+string extractPrefix(const string& text, int patternStartIdx) {
+  return text.substr(std::max(0, patternStartIdx - 3), 
+    std::min(3, patternStartIdx));
+}
+
+string extractSuffix(const string& text, int patternEndIdx) {
+  return text.substr(patternEndIdx, 
+    std::min(3, static_cast<int>(text.size()) - patternEndIdx));
 }
