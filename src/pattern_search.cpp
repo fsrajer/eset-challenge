@@ -3,11 +3,11 @@
 void findPattern(const string& pattern, const string& text,
   vector<int> *ppositions) {
   
-  if (pattern.empty())
-    return;
-
   auto& positions = *ppositions;
   positions.clear();
+
+  if (pattern.empty())
+    return;
 
   for (size_t i = 0; i < text.size(); i++) {
     bool found = true;
