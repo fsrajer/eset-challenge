@@ -42,6 +42,23 @@ void deleteFile(const string& filename) {
   }
 }
 
+void createDir(const string& directory) {
+  int exitCode = CreateDirectory(directory.c_str(), NULL);
+  if (exitCode == 0) {
+    throw std::runtime_error("Could not create directory.");
+  }
+  if (GetLastError() == ERROR_ALREADY_EXISTS) {
+    throw std::runtime_error("Directory already exists.");
+  }
+}
+
+void deleteDir(const string& directory) {
+  int exitCode = RemoveDirectory(directory.c_str());
+  if (exitCode == 0) {
+    throw std::runtime_error("Could not delete directory.");
+  }
+}
+
 void listAllFiles(const string& filenameOrDirectory, 
   vector<string> *filenames) {
   

@@ -40,3 +40,24 @@ TEST_CASE("readFile test") {
     REQUIRE(text == origText);
   }
 }
+
+TEST_CASE("isDir/isFile test") {
+  
+  string filename = "tmp-test-file.txt";
+  CHECK(!isFile(filename));
+  CHECK(!isDir(filename));
+
+  REQUIRE_NOTHROW(writeFile(filename, ""));
+  CHECK(isFile(filename));
+  CHECK(!isDir(filename));
+  CHECK_NOTHROW(deleteFile(filename));
+
+  string directory = "tmp-test-dir";
+  CHECK(!isFile(directory));
+  CHECK(!isDir(directory));
+
+  REQUIRE_NOTHROW(createDir(directory));
+  CHECK(!isFile(directory));
+  CHECK(isDir(directory));
+  CHECK_NOTHROW(deleteDir(directory));
+}
