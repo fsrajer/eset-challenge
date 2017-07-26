@@ -67,3 +67,19 @@ void findPatternInFile(const string& pattern, const string& filename,
     std::cerr << err.what() << "\n  " << filename << "\n";
   }
 }
+
+void findPatternInFileOrDirectory(const string& pattern, 
+  const string& filenameOrDirectory, vector<string> *poutput) {
+
+  auto& output = *poutput;
+  output.clear();
+
+  vector<string> allFilenames;
+  listAllFiles(filenameOrDirectory, &allFilenames);
+
+  for (const auto& fn : allFilenames) {
+    vector<string> curr;
+    findPatternInFile(pattern, fn, &curr);
+    output.insert(output.end(), curr.begin(), curr.end());
+  }
+}
