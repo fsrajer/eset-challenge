@@ -5,6 +5,9 @@
 
 #include "io.h"
 
+const int cMaxPrefixLength = 3;
+const int cMaxSuffixLength = 3;
+
 void findPatternInText(const string& pattern, const string& text,
   vector<int> *ppositions) {
   
@@ -28,19 +31,29 @@ void findPatternInText(const string& pattern, const string& text,
 }
 
 string extractPrefix(const string& text, int patternStartIdx) {
-  return text.substr(std::max(0, patternStartIdx - 3), 
-    std::min(3, patternStartIdx));
+  return text.substr(std::max(0, patternStartIdx - cMaxPrefixLength),
+    std::min(cMaxPrefixLength, patternStartIdx));
 }
 
 string extractSuffix(const string& text, int patternEndIdx) {
   return text.substr(patternEndIdx, 
-    std::min(3, static_cast<int>(text.size()) - patternEndIdx));
+    std::min(cMaxSuffixLength, static_cast<int>(text.size()) - patternEndIdx));
 }
 
 void formatResult(const string& filename, int position,
-  const string& prefix, const string& suffix, string *result) {
-  *result = filename + "(" + std::to_string(position) + "):"
+  const string& prefix, const string& suffix, string *presult) {
+  
+  auto& result = *presult;
+  result = filename + "(" + std::to_string(position) + "):"
     + prefix + "..." + suffix;
+
+  // Handle newlines and tabs
+  size_t pos = result.find_first_of("\t\n", 0);
+  while (pos != string::npos) {
+    result[pos] = (result[pos] == '\n') ? 'n' : 't';
+    result.insert(result.begin() + pos, '\\');
+    pos = result.find_first_of("\t\n", pos);
+  }
 }
 
 void findPatternInFile(const string& pattern, const string& filename,
