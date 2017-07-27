@@ -22,6 +22,8 @@ add_library(PatternSearch
 			  src/pattern_search.cpp
 			  src/io.h 
 			  src/io.cpp 
+			  src/FileCrawler.h 
+			  src/FileCrawler.cpp 
 )
 
 add_executable(PatternSearchApp
