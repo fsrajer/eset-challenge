@@ -17,16 +17,10 @@ void findPatternInText(const string& pattern, const string& text,
   if (pattern.empty())
     return;
 
-  for (size_t i = 0; i < text.size(); i++) {
-    bool found = true;
-    for (size_t j = 0; j < pattern.size(); j++) {
-      if (pattern[j] != text[i + j]) {
-        found = false;
-        break;
-      }
-    }
-    if (found)
-      positions.push_back(i);
+  size_t pos = text.find(pattern, 0);
+  while (pos != string::npos) {
+    positions.push_back(int(pos));
+    pos = text.find(pattern, pos+1);
   }
 }
 
