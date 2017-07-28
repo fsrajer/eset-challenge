@@ -19,7 +19,7 @@ public:
   void readFromFile();
   void readFromFile(int fileLength, std::ifstream *in);
 
-  const static int cMaxSize = 1024;
+  const static int cMaxSize = 10000000;
 
 private:
   string filename_;
