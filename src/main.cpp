@@ -1,8 +1,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <chrono>
 
-#include "io.h"
+#include "io_utils.h"
 #include "pattern_search.h"
 
 using std::cout;
@@ -10,6 +11,7 @@ using std::string;
 using std::vector;
 
 const int cPatternMaxLength = 128;
+const int cNRuns = 100;
 
 void printUsage() {
   cout
@@ -43,7 +45,19 @@ int main(int argc, char *argv[]) {
   }
 
   vector<string> output;
-  findPatternInFileOrDirectory(pattern, path, &output);
+  
+  auto begin = std::chrono::high_resolution_clock::now();
+  for (int i = 0; i < cNRuns; i++) {
+    output.clear();
+    findPatternInFileOrDirectory(pattern, path, &output);
+  }
+  auto end = std::chrono::high_resolution_clock::now();
+  
+  cout << "Runtime: "
+    << std::chrono::duration_cast<std::chrono::milliseconds>(
+      end - begin).count() / double(cNRuns)
+    << "ms averaged over " << cNRuns << " runs\n";
+  
   for (const auto& line : output) {
     cout << line << "\n";
   }
