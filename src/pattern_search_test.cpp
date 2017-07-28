@@ -2,7 +2,8 @@
 #include "catch.hpp"
 
 #include "pattern_search.h"
-#include "io.h"
+#include "io_utils.h"
+#include "TextSegment.h"
 
 TEST_CASE("findPatternInText test") {
   string pattern(""), text("");
@@ -72,27 +73,27 @@ TEST_CASE("prefix/suffix test") {
   REQUIRE(suffix == "g\n");
 }
 
-TEST_CASE("findPatternInFile test") {
-  string pattern(""), text(""), filename("");
-  vector<string> output;
+TEST_CASE("findPatternInSegment test") {
+  string pattern("");
+  
+  string filename = "tmp-test-file.txt";
+  string text = "abcd efg\n__abcd";
+  REQUIRE_NOTHROW(writeFile(filename, text));
 
-  SECTION("everything empty") {
-    findPatternInFile(pattern, filename, &output);
-    REQUIRE(output.empty());
-  }
+  TextSegment segment(filename, 0);
+
+  vector<string> output;
 
   SECTION("output called non-empty") {
     output.resize(10);
-    findPatternInFile(pattern, filename, &output);
+    findPatternInSegment(pattern, segment, &output);
     REQUIRE(output.empty());
   }
 
-  text = "abcd efg\n__abc";
-  filename = "tmp-test-file.txt";
-  REQUIRE_NOTHROW(writeFile(filename, text));
+  segment.readFromFile();
 
   SECTION("empty pattern") {
-    findPatternInFile(pattern, filename, &output);
+    findPatternInSegment(pattern, segment, &output);
     CHECK(output.empty());
   }
   
@@ -100,11 +101,11 @@ TEST_CASE("findPatternInFile test") {
 
   SECTION("one character") {
     pattern = "a";
-    findPatternInFile(pattern, filename, &output);
+    findPatternInSegment(pattern, segment, &output);
     CHECK(output.size() == 2);
     formatResult(filename, 0, "", "bcd", &goodOutput);
     CHECK(output[0] == goodOutput);
-    formatResult(filename, 11, "\n__", "bc", &goodOutput);
+    formatResult(filename, 11, "\\n__", "bcd", &goodOutput);
     CHECK(output[1] == goodOutput);
   }
 

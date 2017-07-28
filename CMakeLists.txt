@@ -46,8 +46,8 @@ endmacro(EC_ADD_TEST)
   
 EC_ADD_TEST(pattern_search_test 
 			  src/pattern_search_test.cpp)
-EC_ADD_TEST(io_test 
-			  src/io_test.cpp)
+EC_ADD_TEST(io_utils_test 
+			  src/io_utils_test.cpp)
 
 install(TARGETS PatternSearch 
 		DESTINATION lib)

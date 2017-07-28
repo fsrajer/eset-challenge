@@ -16,6 +16,7 @@ public:
   int offset() const;
   const string& text() const;
 
+  void readFromFile();
   void readFromFile(int fileLength, std::ifstream *in);
 
   const static int cMaxSize = 1024;
