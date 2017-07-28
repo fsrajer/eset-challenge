@@ -9,6 +9,7 @@ using std::shared_ptr;
 
 class TextSegment {
 public:
+  TextSegment();
   TextSegment(const string& filename, int offset);
 
   const string& filename() const;

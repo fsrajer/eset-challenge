@@ -2,6 +2,9 @@
 
 #include <algorithm>
 
+TextSegment::TextSegment() {
+}
+
 TextSegment::TextSegment(const string& filename, int offset)
   : filename_(filename), offset_(offset), text_(new string) {
 }
@@ -23,7 +26,7 @@ void TextSegment::readFromFile(int fileLength, std::ifstream *in) {
   in->seekg(offset_, std::ios::beg);
 
   int size = std::min(cMaxSize, fileLength - offset_);
-  text_->reserve(size);
+  text_->resize(size);
 
   in->read(&(*text_)[0], size);
 }

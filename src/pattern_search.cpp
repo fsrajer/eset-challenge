@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "io.h"
+#include "FileCrawler.h"
 
 const int cMaxPrefixLength = 3;
 const int cMaxSuffixLength = 3;
@@ -50,28 +51,21 @@ void formatResult(const string& filename, int position,
   }
 }
 
-void findPatternInFile(const string& pattern, const string& filename,
+void findPatternInSegment(const string& pattern, const TextSegment& segment,
   vector<string> *poutput) {
 
   auto& output = *poutput;
   output.clear();
 
-  try {
-    string text;
-    readFile(filename, &text);
+  vector<int> positions;
+  findPatternInText(pattern, segment.text(), &positions);
+  output.resize(positions.size());
 
-    vector<int> positions;
-    findPatternInText(pattern, text, &positions);
-    output.resize(positions.size());
-
-    for (size_t i = 0; i < positions.size(); i++) {
-      int position = positions[i];
-      formatResult(filename, position, extractPrefix(text, position),
-        extractSuffix(text, position + pattern.size()), &output[i]);
-    }
-  }
-  catch (std::runtime_error err) {
-    std::cerr << err.what() << "\n  " << filename << "\n";
+  for (size_t i = 0; i < positions.size(); i++) {
+    int position = positions[i];
+    formatResult(segment.filename(), segment.offset() + position, 
+      extractPrefix(segment.text(), position),
+      extractSuffix(segment.text(), position + pattern.size()), &output[i]);
   }
 }
 
@@ -81,12 +75,13 @@ void findPatternInFileOrDirectory(const string& pattern,
   auto& output = *poutput;
   output.clear();
 
-  vector<string> allFilenames;
-  listAllFiles(filenameOrDirectory, &allFilenames);
+  FileCrawler fc(filenameOrDirectory, pattern.size());
 
-  for (const auto& fn : allFilenames) {
+  while (!fc.isFinished()) {
+    TextSegment segment;
+    fc.getNextSegment(&segment);
     vector<string> curr;
-    findPatternInFile(pattern, fn, &curr);
+    findPatternInSegment(pattern, segment, &curr);
     output.insert(output.end(), curr.begin(), curr.end());
   }
 }

@@ -64,13 +64,14 @@ void FileCrawler::readSegments(const Path& file) {
     
     TextSegment segment(file.path, currOff);
     segment.readFromFile(fileLength, &in);
+    segmentsToProcess.push_back(segment);
 
     currOff += segment.text().size();
     if (currOff >= fileLength) {
       break;
     }
     else {
-      currOff -= patternLength_;
+      currOff = currOff - patternLength_ + 1;
     }
   }
 
