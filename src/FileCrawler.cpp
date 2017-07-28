@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "io.h"
+#include "io_utils.h"
 
 FileCrawler::FileCrawler(const string& path, int patternLength)
   : patternLength_(patternLength)
@@ -36,7 +36,7 @@ void FileCrawler::readSegments() {
     
     if (isDir(curr.path)) {
       vector<string> candidates;
-      listAllFilesInDir(curr.path, &candidates);
+      listAllFiles(curr.path, &candidates);
       for (const auto& candidate : candidates) {
         pathsToProcess.emplace_back(candidate, 0);
       }

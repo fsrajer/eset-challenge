@@ -20,8 +20,8 @@ target_include_directories(catch INTERFACE ${CATCH_INCLUDE_DIR})
 add_library(PatternSearch 
 			  src/pattern_search.h 
 			  src/pattern_search.cpp
-			  src/io.h 
-			  src/io.cpp 
+			  src/io_utils.h 
+			  src/io_utils.cpp 
 			  src/FileCrawler.h 
 			  src/FileCrawler.cpp 
 			  src/TextSegment.h 

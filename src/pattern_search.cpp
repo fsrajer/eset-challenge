@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <iostream>
 
-#include "io.h"
 #include "FileCrawler.h"
 
 const int cMaxPrefixLength = 3;
