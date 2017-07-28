@@ -20,8 +20,12 @@ target_include_directories(catch INTERFACE ${CATCH_INCLUDE_DIR})
 add_library(PatternSearch 
 			  src/pattern_search.h 
 			  src/pattern_search.cpp
-			  src/io.h 
-			  src/io.cpp 
+			  src/io_utils.h 
+			  src/io_utils.cpp 
+			  src/FileCrawler.h 
+			  src/FileCrawler.cpp 
+			  src/TextSegment.h 
+			  src/TextSegment.cpp 
 )
 
 add_executable(PatternSearchApp
@@ -42,8 +46,8 @@ endmacro(EC_ADD_TEST)
   
 EC_ADD_TEST(pattern_search_test 
 			  src/pattern_search_test.cpp)
-EC_ADD_TEST(io_test 
-			  src/io_test.cpp)
+EC_ADD_TEST(io_utils_test 
+			  src/io_utils_test.cpp)
 
 install(TARGETS PatternSearch 
 		DESTINATION lib)

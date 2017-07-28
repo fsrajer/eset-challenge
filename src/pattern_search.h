@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "TextSegment.h"
+
 using std::string;
 using std::vector;
 
@@ -19,7 +21,7 @@ void formatResult(const string& filename, int position,
   const string& prefix, const string& suffix, string *result);
 
 /// Output in the final format
-void findPatternInFile(const string& pattern, const string& filename,
+void findPatternInSegment(const string& pattern, const TextSegment& segment,
   vector<string> *output);
 
 /// Output in the final format

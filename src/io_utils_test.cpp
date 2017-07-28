@@ -4,8 +4,9 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-#include "io.h"
+#include "io_utils.h"
 
+/*
 TEST_CASE("readFile test") {
   string filename(""), text("");
 
@@ -39,7 +40,7 @@ TEST_CASE("readFile test") {
     CHECK_NOTHROW(deleteFile(filename));
     REQUIRE(text == origText);
   }
-}
+}*/
 
 TEST_CASE("isDir/isFile test") {
   
@@ -69,7 +70,6 @@ TEST_CASE("list files in directory test") {
   vector<string> filenames;
   for (size_t i = 0; i < 4; i++) {
     filenames.push_back(directory + "/tmp-test-file" + std::to_string(i));
-    filenames.push_back(directoryInner + "/tmp-test-file" + std::to_string(i));
   }
   
   CHECK_NOTHROW(createDir(directory));
@@ -79,12 +79,8 @@ TEST_CASE("list files in directory test") {
   }
 
   vector<string> filenamesListed;
-  listAllFilesInDir(directory, &filenamesListed);
-  CHECK(filenamesListed.size() == (1 + filenames.size() / 2));
-
-  filenamesListed.clear();
   listAllFiles(directory, &filenamesListed);
-  CHECK(filenamesListed.size() == filenames.size());
+  CHECK(filenamesListed.size() == (1 + filenames.size()));
 
   for (const auto& fn : filenames) {
     CHECK_NOTHROW(deleteFile(fn));
