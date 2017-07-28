@@ -3,7 +3,7 @@
 #include <vector>
 #include <chrono>
 
-#include "io.h"
+#include "io_utils.h"
 #include "pattern_search.h"
 
 using std::cout;
