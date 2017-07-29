@@ -58,6 +58,8 @@ endmacro(EC_ADD_TEST)
 if(${CATCH_FOUND})
 	EC_ADD_TEST(PatternSearchTest 
 				src/PatternSearchTest.cpp)
+	EC_ADD_TEST(TextSegmentTest 
+				src/TextSegmentTest.cpp)
 	EC_ADD_TEST(UtilsTest 
 				src/UtilsTest.cpp)
 endif()

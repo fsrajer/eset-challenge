@@ -2,7 +2,8 @@
 
 #include <algorithm>
 
-TextSegment::TextSegment() {
+TextSegment::TextSegment()
+  : text_(new string) {
 }
 
 TextSegment::TextSegment(const string& filename, int offset)
