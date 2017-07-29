@@ -35,6 +35,9 @@ add_library(PatternSearch
 			  src/FileCrawler.cpp 
 			  src/TextSegment.h 
 			  src/TextSegment.cpp 
+			  src/Semaphore.h 
+			  src/Semaphore.cpp 
+			  src/ProducerConsumerBuffer.h
 )
 
 add_executable(PatternSearchApp
