@@ -1,20 +1,26 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 
 project(eset-challenge)
 
 # enable visual studio folders
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-enable_testing()
 
 # Find Catch, the test lib
 include(FindPackageHandleStandardArgs)
 find_path(CATCH_INCLUDE_DIR catch.hpp HINTS "../catch")
 find_package_handle_standard_args(CATCH DEFAULT_MSG CATCH_INCLUDE_DIR)
 
-# Create an interface in order for linking Catch to tests
-add_library(catch INTERFACE)
-target_include_directories(catch INTERFACE ${CATCH_INCLUDE_DIR})
+if(${CATCH_FOUND})
+	enable_testing()
+	
+	# Create an interface in order for linking Catch to tests
+	add_library(catch INTERFACE)
+	target_include_directories(catch INTERFACE ${CATCH_INCLUDE_DIR})
+else()
+	message(STATUS "Catch not found. Building without tests.")
+endif()
+
 
 # Main library
 add_library(PatternSearch 
@@ -43,11 +49,12 @@ macro(EC_ADD_TEST TARGET_NAME)
 			DESTINATION test)
 endmacro(EC_ADD_TEST)
   
-  
-EC_ADD_TEST(pattern_search_test 
-			  src/pattern_search_test.cpp)
-EC_ADD_TEST(io_utils_test 
-			  src/io_utils_test.cpp)
+if(${CATCH_FOUND})
+	EC_ADD_TEST(pattern_search_test 
+				src/pattern_search_test.cpp)
+	EC_ADD_TEST(io_utils_test 
+				src/io_utils_test.cpp)
+endif()
 
 install(TARGETS PatternSearch 
 		DESTINATION lib)
