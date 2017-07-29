@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <chrono>
 
 #include "TextSegment.h"
 
@@ -24,6 +25,7 @@ void formatResult(const string& filename, int position,
 void findPatternInSegment(const string& pattern, const TextSegment& segment,
   vector<string> *output);
 
-/// Output in the final format
-void findPatternInFileOrDirectory(const string& pattern,
+/// output in the final format
+/// \return duration of the search only (no file crawling) 
+std::chrono::nanoseconds findPatternInFileOrDirectory(const string& pattern,
   const string& filenameOrDirectory, vector<string> *output);

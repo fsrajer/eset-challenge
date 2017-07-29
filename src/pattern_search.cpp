@@ -68,7 +68,7 @@ void findPatternInSegment(const string& pattern, const TextSegment& segment,
   }
 }
 
-void findPatternInFileOrDirectory(const string& pattern, 
+std::chrono::nanoseconds findPatternInFileOrDirectory(const string& pattern,
   const string& filenameOrDirectory, vector<string> *poutput) {
 
   auto& output = *poutput;
@@ -76,11 +76,20 @@ void findPatternInFileOrDirectory(const string& pattern,
 
   FileCrawler fc(filenameOrDirectory, pattern.size());
 
+  std::chrono::nanoseconds searchTime(0);
   while (!fc.isFinished()) {
     TextSegment segment;
     fc.getNextSegment(&segment);
+
+    auto begin = std::chrono::high_resolution_clock::now();
+
     vector<string> curr;
     findPatternInSegment(pattern, segment, &curr);
     output.insert(output.end(), curr.begin(), curr.end());
+
+    auto end = std::chrono::high_resolution_clock::now();
+    searchTime += std::chrono::duration_cast<std::chrono::nanoseconds>(
+      end - begin);
   }
+  return searchTime;
 }
