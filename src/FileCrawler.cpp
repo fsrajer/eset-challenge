@@ -5,7 +5,7 @@
 #include <fstream>
 #include <thread>
 
-#include "io_utils.h"
+#include "Utils.h"
 
 FileCrawler::FileCrawler(int patternLength,
   ProducerConsumerBuffer<TextSegment> *segments)

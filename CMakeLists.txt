@@ -29,8 +29,8 @@ endif()
 add_library(PatternSearch 
 			  src/PatternSearch.h 
 			  src/PatternSearch.cpp
-			  src/io_utils.h 
-			  src/io_utils.cpp 
+			  src/Utils.h 
+			  src/Utils.cpp 
 			  src/FileCrawler.h 
 			  src/FileCrawler.cpp 
 			  src/TextSegment.h 
@@ -56,10 +56,10 @@ macro(EC_ADD_TEST TARGET_NAME)
 endmacro(EC_ADD_TEST)
   
 if(${CATCH_FOUND})
-	EC_ADD_TEST(pattern_search_test 
-				src/pattern_search_test.cpp)
-	EC_ADD_TEST(io_utils_test 
-				src/io_utils_test.cpp)
+	EC_ADD_TEST(PatternSearchTest 
+				src/PatternSearchTest.cpp)
+	EC_ADD_TEST(UtilsTest 
+				src/UtilsTest.cpp)
 endif()
 
 install(TARGETS PatternSearch 
