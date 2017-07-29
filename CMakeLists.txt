@@ -2,9 +2,12 @@ cmake_minimum_required(VERSION 2.8)
 
 project(eset-challenge)
 
+if(NOT WIN32)
+  message(FATAL_ERROR "Windows needed due to the use of windows.h functions for handling directories.")
+endif()
+
 # enable visual studio folders
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
 
 # Find Catch, the test lib
 include(FindPackageHandleStandardArgs)
