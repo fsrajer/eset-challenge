@@ -56,6 +56,8 @@ macro(EC_ADD_TEST TARGET_NAME)
 endmacro(EC_ADD_TEST)
   
 if(${CATCH_FOUND})
+	EC_ADD_TEST(FileCrawlerTest 
+				src/FileCrawlerTest.cpp)
 	EC_ADD_TEST(PatternSearchTest 
 				src/PatternSearchTest.cpp)
 	EC_ADD_TEST(TextSegmentTest 
