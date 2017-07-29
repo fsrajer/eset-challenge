@@ -47,27 +47,18 @@ int main(int argc, char *argv[]) {
   vector<string> output;
   
   auto begin = std::chrono::high_resolution_clock::now();
-  std::chrono::nanoseconds searchTimeNano(0);
   for (int i = 0; i < cNRuns; i++) {
     output.clear();
     PatternSearch searchEngine;
-    searchTimeNano += searchEngine.findPattern(pattern, path, &output);
+    searchEngine.findPattern(pattern, path, &output);
   }
   auto end = std::chrono::high_resolution_clock::now();
-  size_t searchTime = std::chrono::duration_cast<std::chrono::milliseconds>(
-    searchTimeNano).count();
-  size_t totalTime = std::chrono::duration_cast<std::chrono::milliseconds>(
-    end - begin).count();
+  
   cout << "Runtime: "
-    <<  totalTime / double(cNRuns)
+    << std::chrono::duration_cast<std::chrono::milliseconds>(
+      end - begin).count() / double(cNRuns)
     << "ms averaged over " << cNRuns << " runs\n";
-  cout << "Search runtime: "
-    << searchTime / double(cNRuns)
-    << "ms averaged over " << cNRuns << " runs\n";
-  cout << "File crawler runtime: "
-    << (totalTime - searchTime) / double(cNRuns)
-    << "ms averaged over " << cNRuns << " runs\n";
-
+  
   for (const auto& line : output) {
     cout << line << "\n";
   }

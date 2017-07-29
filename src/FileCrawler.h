@@ -2,32 +2,29 @@
 
 #include <string>
 #include <list>
+#include <memory>
 
 #include "TextSegment.h"
+#include "ProducerConsumerBuffer.h"
 
 using std::string;
 using std::list;
 
 class FileCrawler {
 public:
-  FileCrawler(const string& path, int patternLength);
-  void getNextSegment(TextSegment *seg);
-  bool isFinished() const;
+  FileCrawler(int patternLength, 
+    ProducerConsumerBuffer<TextSegment> *segments);
+
+  /// This method has a corresponding join() method.
+  void startReaderWorker(const string& path);
+  void join();
 
 private:
-  class Path {
-  public:
-    Path(const string& path, int offset);
-    string path;
-    /// Marks where we should start reading a file (meaningless for dirs).
-    int offset; 
-  };
+  void readSegmentsWorker();
+  void readSegmentsFromFile(const string& filename);
 
-  void readSegments();
-  void readSegments(const Path& file);
-
-  const static int cMaxSegmentsInMemory = 2;
   const int patternLength_;
-  list<TextSegment> segmentsToProcess;
-  list<Path> pathsToProcess;
+  list<string> pathsToProcess_;
+  ProducerConsumerBuffer<TextSegment> *segments_;
+  std::shared_ptr<std::thread> worker_;
 };

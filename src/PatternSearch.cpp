@@ -5,50 +5,56 @@
 
 #include "FileCrawler.h"
 
-const int cMaxPrefixLength = 3;
-const int cMaxSuffixLength = 3;
+PatternSearch::PatternSearch()
+  : segments_(cMaxSegmentsInMemory) {
 
-std::chrono::nanoseconds PatternSearch::findPattern(const string& pattern,
+}
+
+void PatternSearch::findPattern(const string& pattern,
   const string& path, vector<string> *poutput) {
 
   auto& output = *poutput;
   output.clear();
 
-  FileCrawler fc(path, pattern.size());
+  FileCrawler fc(pattern.size(), &segments_);
+  fc.startReaderWorker(path);
 
-  std::chrono::nanoseconds searchTime(0);
-  while (!fc.isFinished()) {
-    TextSegment segment;
-    fc.getNextSegment(&segment);
-
-    auto begin = std::chrono::high_resolution_clock::now();
-
-    vector<string> curr;
-    findPatternWorker(pattern, segment, &curr);
-    output.insert(output.end(), curr.begin(), curr.end());
-
-    auto end = std::chrono::high_resolution_clock::now();
-    searchTime += std::chrono::duration_cast<std::chrono::nanoseconds>(
-      end - begin);
+  vector<std::thread> workers;
+  for (int i = 0; i < cNThreads; i++) {
+    workers.emplace_back(&PatternSearch::findPatternWorker, this, pattern, &output);
   }
-  return searchTime;
+
+  fc.join();
+  for (auto& w : workers) {
+    w.join();
+  }
 }
 
 void PatternSearch::findPatternWorker(const string& pattern, 
-  const TextSegment& segment, vector<string> *poutput) {
+  vector<string> *poutput) {
 
   auto& output = *poutput;
-  output.clear();
 
-  vector<int> positions;
-  findPatternInText(pattern, segment.text(), &positions);
-  output.resize(positions.size());
+  TextSegment segment;
+  auto signal = segments_.removeItem(&segment);
+  while (signal == ProducerConsumerBufferSignal::OK) {
 
-  for (size_t i = 0; i < positions.size(); i++) {
-    int position = positions[i];
-    formatResult(segment.filename(), segment.offset() + position,
-      extractPrefix(segment.text(), position),
-      extractSuffix(segment.text(), position + pattern.size()), &output[i]);
+    vector<int> positions;
+    findPatternInText(pattern, segment.text(), &positions);
+    
+    vector<string> currOutput(positions.size());
+    for (size_t i = 0; i < positions.size(); i++) {
+      int position = positions[i];
+      formatResult(segment.filename(), segment.offset() + position,
+        extractPrefix(segment.text(), position),
+        extractSuffix(segment.text(), position + pattern.size()), &currOutput[i]);
+    }
+
+    outputMutex_.lock();
+    output.insert(output.end(), currOutput.begin(), currOutput.end());
+    outputMutex_.unlock();
+
+    signal = segments_.removeItem(&segment);
   }
 }
 
