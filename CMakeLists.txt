@@ -27,8 +27,8 @@ endif()
 
 # Main library
 add_library(PatternSearch 
-			  src/pattern_search.h 
-			  src/pattern_search.cpp
+			  src/PatternSearch.h 
+			  src/PatternSearch.cpp
 			  src/io_utils.h 
 			  src/io_utils.cpp 
 			  src/FileCrawler.h 

@@ -4,7 +4,7 @@
 #include <chrono>
 
 #include "io_utils.h"
-#include "pattern_search.h"
+#include "PatternSearch.h"
 
 using std::cout;
 using std::string;
@@ -50,7 +50,8 @@ int main(int argc, char *argv[]) {
   std::chrono::nanoseconds searchTimeNano(0);
   for (int i = 0; i < cNRuns; i++) {
     output.clear();
-    searchTimeNano += findPatternInFileOrDirectory(pattern, path, &output);
+    PatternSearch searchEngine;
+    searchTimeNano += searchEngine.findPattern(pattern, path, &output);
   }
   auto end = std::chrono::high_resolution_clock::now();
   size_t searchTime = std::chrono::duration_cast<std::chrono::milliseconds>(
