@@ -34,7 +34,7 @@ private:
   string filename_;
   long long offset_;
   long long textSize_;
-  int preTextSize_;
-  int postTextSize_;
+  long long preTextSize_;
+  long long postTextSize_;
   shared_ptr<string> text_;
 };

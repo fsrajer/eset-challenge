@@ -21,9 +21,10 @@ public:
   static void formatResult(const string& filename, long long position,
     const string& prefix, const string& suffix, string *result);
 
+  // Signed representation is more convenient for subtraction.
   const static long long cMaxSegmentSize = 10000000;
-  const static int cMaxPrefixSize = 3;
-  const static int cMaxSuffixSize = 3;
+  const static long long cMaxPrefixSize = 3;
+  const static long long cMaxSuffixSize = 3;
   const static int cMaxSegmentsInMemory = 100;
   const static int cNThreads = 8;
 

@@ -87,7 +87,7 @@ void PatternSearch::findPatternInText(const string& pattern,
 
   size_t pos = text.find(pattern, 0);
   while (pos != string::npos) {
-    positions.push_back(long long(pos));
+    positions.push_back(static_cast<long long>(pos));
     pos = text.find(pattern, pos+1);
   }
 }

@@ -28,7 +28,7 @@ size_t TextSegment::find(const string& substr, size_t offset) const {
   size_t pos = text_->find(substr, offset + preTextSize_);
   if (pos != string::npos) {
     pos -= preTextSize_;
-    if ((pos + substr.size()) > textSize_) {
+    if ((pos + substr.size()) > static_cast<size_t>(textSize_)) {
       pos = string::npos;
     }
   }
@@ -54,8 +54,8 @@ void TextSegment::readFromFile(long long fileLength, std::ifstream *in) {
   textSize_ = std::min(PatternSearch::cMaxSegmentSize, fileLength - offset_);
 
   // Load also a potential prefix and suffix.
-  preTextSize_ = std::min(long long(PatternSearch::cMaxPrefixSize), offset_);
-  postTextSize_ = std::min(long long(PatternSearch::cMaxSuffixSize),
+  preTextSize_ = std::min(PatternSearch::cMaxPrefixSize, offset_);
+  postTextSize_ = std::min(PatternSearch::cMaxSuffixSize,
     fileLength - offset_ - textSize_);
 
   long long readOffset = offset_ - preTextSize_;
@@ -69,14 +69,14 @@ void TextSegment::readFromFile(long long fileLength, std::ifstream *in) {
 
 string TextSegment::extractPrefix(long long patternStartIdx) {
   long long patternStartIdxLocal = patternStartIdx + preTextSize_;
-  return text_->substr(std::max(0LL, 
-    patternStartIdxLocal - PatternSearch::cMaxPrefixSize),
-    std::min(long long(PatternSearch::cMaxPrefixSize), patternStartIdxLocal));
+  return text_->substr(
+    std::max(0LL, patternStartIdxLocal - PatternSearch::cMaxPrefixSize),
+    std::min(PatternSearch::cMaxPrefixSize, patternStartIdxLocal));
 }
 
 string TextSegment::extractSuffix(long long patternEndIdx) {
   long long patternEndIdxLocal = patternEndIdx + preTextSize_;
   return text_->substr(patternEndIdxLocal,
-    std::min(long long(PatternSearch::cMaxSuffixSize),
-      static_cast<int>(text_->size()) - patternEndIdxLocal));
+    std::min(PatternSearch::cMaxSuffixSize,
+      static_cast<long long>(text_->size()) - patternEndIdxLocal));
 }
