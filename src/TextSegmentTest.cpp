@@ -100,3 +100,57 @@ TEST_CASE("find test") {
 
   REQUIRE_NOTHROW(deleteFile(filename));
 }
+
+TEST_CASE("prefix/suffix test") {
+
+  string text;
+  text.resize(TextSegment::cMaxSize - 3, 'a');
+
+  string filename = "tmp-test-file.txt";
+  int segmentOffset = 3;
+
+  string expectedPrefix, expectedSuffix;
+  int patternStartIdx, patternEndIdx;
+
+  SECTION("prefix/suffix outside segment") {
+    expectedPrefix = "xyz";
+    expectedSuffix = "uvt";
+    text = expectedPrefix + text + "aaa" + expectedSuffix;
+    patternStartIdx = 0;
+    patternEndIdx = TextSegment::cMaxSize;
+  }
+
+  SECTION("prefix/suffix half in segment") {
+    expectedPrefix = "xyz";
+    expectedSuffix = "uvt";
+    text = "a" + expectedPrefix + text + "a" + expectedSuffix;
+    patternStartIdx = 1;
+    patternEndIdx = TextSegment::cMaxSize - 1;
+  }
+
+  SECTION("prefix/suffix in segment") {
+    expectedPrefix = "xyz";
+    expectedSuffix = "uvt";
+    text[0] = 'x'; text[1] = 'y'; text[2] = 'z';
+    text = "aaa" + text + expectedSuffix + "aaaaaa";
+    patternStartIdx = 3;
+    patternEndIdx = TextSegment::cMaxSize - 3;
+  }
+
+  SECTION("borders") {
+    segmentOffset = 0;
+    expectedPrefix = "";
+    expectedSuffix = "";
+    patternStartIdx = 0;
+    patternEndIdx = text.size();
+  }
+
+  REQUIRE_NOTHROW(writeFile(filename, text));
+  TextSegment segment(filename, segmentOffset);
+  segment.readFromFile();
+  
+  CHECK(segment.extractPrefix(patternStartIdx) == expectedPrefix);
+  CHECK(segment.extractSuffix(patternEndIdx) == expectedSuffix);
+
+  REQUIRE_NOTHROW(deleteFile(filename));
+}
