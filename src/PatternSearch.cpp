@@ -30,6 +30,22 @@ void PatternSearch::findPattern(const string& pattern,
   }
 }
 
+void PatternSearch::formatResult(const string& filename, int position,
+  const string& prefix, const string& suffix, string *presult) {
+
+  auto& result = *presult;
+  result = filename + "(" + std::to_string(position) + "):"
+    + prefix + "..." + suffix;
+
+  // Handle newlines and tabs
+  size_t pos = result.find_first_of("\t\n", 0);
+  while (pos != string::npos) {
+    result[pos] = (result[pos] == '\n') ? 'n' : 't';
+    result.insert(result.begin() + pos, '\\');
+    pos = result.find_first_of("\t\n", pos);
+  }
+}
+
 void PatternSearch::findPatternWorker(const string& pattern, 
   vector<string> *poutput) {
 
@@ -84,18 +100,3 @@ string PatternSearch::extractSuffix(const string& text, int patternEndIdx) {
     std::min(cMaxSuffixLength, static_cast<int>(text.size()) - patternEndIdx));
 }
 
-void PatternSearch::formatResult(const string& filename, int position,
-  const string& prefix, const string& suffix, string *presult) {
-  
-  auto& result = *presult;
-  result = filename + "(" + std::to_string(position) + "):"
-    + prefix + "..." + suffix;
-
-  // Handle newlines and tabs
-  size_t pos = result.find_first_of("\t\n", 0);
-  while (pos != string::npos) {
-    result[pos] = (result[pos] == '\n') ? 'n' : 't';
-    result.insert(result.begin() + pos, '\\');
-    pos = result.find_first_of("\t\n", pos);
-  }
-}

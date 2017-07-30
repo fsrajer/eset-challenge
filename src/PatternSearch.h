@@ -17,6 +17,10 @@ public:
   void findPattern(const string& pattern, 
     const string& path, vector<string> *output);
 
+  /// Format one entry of the result.
+  static void formatResult(const string& filename, int position,
+    const string& prefix, const string& suffix, string *result);
+
 private:
   /// This will be filled by file crawler and processed here.
   ProducerConsumerBuffer<TextSegment> segments_;
@@ -34,9 +38,6 @@ private:
   string extractPrefix(const string& text, int patternStartIdx);
   /// patternEndIdx points to the first element after the pattern
   string extractSuffix(const string& text, int patternEndIdx);
-  /// Format one entry of the result.
-  void formatResult(const string& filename, int position,
-    const string& prefix, const string& suffix, string *result);
 };
 
 
