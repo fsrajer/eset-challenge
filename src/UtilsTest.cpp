@@ -4,7 +4,7 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-#include "io_utils.h"
+#include "Utils.h"
 
 /*
 TEST_CASE("readFile test") {

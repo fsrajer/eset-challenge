@@ -1,17 +1,16 @@
-#include "io_utils.h"
+#include "Utils.h"
 
 #include <windows.h>
 #include <fstream>
 #include <exception>
 
 void writeFile(const string& filename, const string& text) {
-  std::ofstream file(filename);
+  std::ofstream file(filename, std::ios::out | std::ios::binary);
   
   if (!file.is_open()) {
     throw std::runtime_error("Could not open file.");
   }
-
-  file << text;
+  file.write(text.c_str(), text.size());
   file.close();
 }
 

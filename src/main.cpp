@@ -3,15 +3,15 @@
 #include <vector>
 #include <chrono>
 
-#include "io_utils.h"
-#include "pattern_search.h"
+#include "Utils.h"
+#include "PatternSearch.h"
 
 using std::cout;
 using std::string;
 using std::vector;
 
 const int cPatternMaxLength = 128;
-const int cNRuns = 100;
+const int cNRuns = 10;
 
 void printUsage() {
   cout
@@ -49,7 +49,8 @@ int main(int argc, char *argv[]) {
   auto begin = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < cNRuns; i++) {
     output.clear();
-    findPatternInFileOrDirectory(pattern, path, &output);
+    PatternSearch searchEngine;
+    searchEngine.findPattern(pattern, path, &output);
   }
   auto end = std::chrono::high_resolution_clock::now();
   
