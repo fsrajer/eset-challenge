@@ -56,3 +56,47 @@ TEST_CASE("readFromFile2 test") {
 
   CHECK_NOTHROW(deleteFile(filename));
 }
+
+TEST_CASE("find test") {
+
+  string pattern("xyz");
+  string text;
+  text.resize(TextSegment::cMaxSize - 3, 'a');
+
+  string filename = "tmp-test-file.txt";
+  int segmentOffset = 3;
+  TextSegment segment(filename, segmentOffset);
+
+  int findOffset;
+  size_t expectedIndex;
+
+  SECTION("pattern outside segment") {
+    text = pattern + text;
+    findOffset = 0;
+    expectedIndex = string::npos;
+  }
+
+  SECTION("pattern outside segment2") {
+    text = text + "aaaa" + pattern;
+    findOffset = 0;
+    expectedIndex = string::npos;
+  }
+
+  SECTION("find-offset after pattern") {
+    text = "aaa" + pattern + text;
+    findOffset = 1;
+    expectedIndex = string::npos;
+  }
+
+  SECTION("pattern in segment") {
+    text = text + pattern;
+    findOffset = 0;
+    expectedIndex = TextSegment::cMaxSize - 3 - 3;
+  }
+
+  REQUIRE_NOTHROW(writeFile(filename, text));
+  segment.readFromFile();
+  CHECK(segment.find(pattern, findOffset) == expectedIndex);
+
+  REQUIRE_NOTHROW(deleteFile(filename));
+}
