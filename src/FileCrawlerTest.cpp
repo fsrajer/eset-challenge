@@ -8,6 +8,7 @@
 #include "Utils.h"
 #include "ProducerConsumerBuffer.h"
 #include "TextSegment.h"
+#include "PatternSearch.h"
 
 TEST_CASE("read test") {
 
@@ -30,9 +31,9 @@ TEST_CASE("read test") {
 
   SECTION("non-existent dir") {
     string text;
-    text.resize(TextSegment::cMaxSize * 2, 'a');
-    text[TextSegment::cMaxSize / 2] = 'b';
-    text[TextSegment::cMaxSize] = 'x';
+    text.resize(PatternSearch::cMaxSegmentSize * 2, 'a');
+    text[PatternSearch::cMaxSegmentSize / 2] = 'b';
+    text[PatternSearch::cMaxSegmentSize] = 'x';
 
     CHECK_NOTHROW(createDir(directory));
     string filename = directory + "/tmp-test-file1.txt";
@@ -49,12 +50,13 @@ TEST_CASE("read test") {
     CHECK(segments.removeItem(&segment) ==
       ProducerConsumerBufferSignal::OK);
     CHECK(segment.find(text.substr(
-      TextSegment::cMaxSize - pattern.size() + 1,
-      TextSegment::cMaxSize), 0) == 0);
+      PatternSearch::cMaxSegmentSize - pattern.size() + 1,
+      PatternSearch::cMaxSegmentSize), 0) == 0);
 
     CHECK(segments.removeItem(&segment) ==
       ProducerConsumerBufferSignal::OK);
-    CHECK(segment.find(text.substr(0, TextSegment::cMaxSize), 0) == 0);
+    CHECK(segment.find(
+      text.substr(0, PatternSearch::cMaxSegmentSize), 0) == 0);
 
     CHECK(segments.removeItem(&segment) ==
       ProducerConsumerBufferSignal::SHUTDOWN);

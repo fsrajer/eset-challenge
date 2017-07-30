@@ -21,12 +21,17 @@ public:
   static void formatResult(const string& filename, long long position,
     const string& prefix, const string& suffix, string *result);
 
+  const static long long cMaxSegmentSize = 10000000;
+  const static int cMaxPrefixSize = 3;
+  const static int cMaxSuffixSize = 3;
+  const static int cMaxSegmentsInMemory = 100;
+  const static int cNThreads = 8;
+
 private:
   /// This will be filled by file crawler and processed here.
   ProducerConsumerBuffer<TextSegment> segments_;
-  const static int cMaxSegmentsInMemory = 100;
-  const static int cNThreads = 8;
   std::mutex outputMutex_;
+
 
   void findPatternWorker(const string& pattern, vector<string> *output);
     

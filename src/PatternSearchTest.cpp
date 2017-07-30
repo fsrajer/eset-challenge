@@ -62,7 +62,7 @@ TEST_CASE("prefix/suffix test") {
 
   string pattern("xyz");
   string text;
-  text.resize(TextSegment::cMaxSize - 3, 'a');
+  text.resize(PatternSearch::cMaxSegmentSize - 3, 'a');
 
   string filename = "tmp-test-file.txt";
   vector<string> output;
@@ -79,28 +79,28 @@ TEST_CASE("prefix/suffix test") {
 
   SECTION("file end") {
     text += ("ccc" + pattern);
-    expectedOffset = TextSegment::cMaxSize;
+    expectedOffset = PatternSearch::cMaxSegmentSize;
     expectedPrefix = "ccc";
     expectedSuffix = "";
   }
 
   SECTION("postfix borderline") {
     text += (pattern + "bbb");
-    expectedOffset = TextSegment::cMaxSize - 3;
+    expectedOffset = PatternSearch::cMaxSegmentSize - 3;
     expectedPrefix = "aaa";
     expectedSuffix = "bbb";
   }
 
   SECTION("postfix borderline2") {
     text += ("cc" + pattern + "bbb");
-    expectedOffset = TextSegment::cMaxSize - 1;
+    expectedOffset = PatternSearch::cMaxSegmentSize - 1;
     expectedPrefix = "acc";
     expectedSuffix = "bbb";
   }
 
   SECTION("prefix borderline") {
     text += ("b" + pattern + "ccc");
-    expectedOffset = TextSegment::cMaxSize - 2;
+    expectedOffset = PatternSearch::cMaxSegmentSize - 2;
     expectedPrefix = "aab";
     expectedSuffix = "ccc";
   }

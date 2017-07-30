@@ -6,6 +6,7 @@
 
 #include "TextSegment.h"
 #include "Utils.h"
+#include "PatternSearch.h"
 
 TEST_CASE("empty constructor test") {
 
@@ -61,7 +62,7 @@ TEST_CASE("find test") {
 
   string pattern("xyz");
   string text;
-  text.resize(TextSegment::cMaxSize - 3, 'a');
+  text.resize(PatternSearch::cMaxSegmentSize - 3, 'a');
 
   string filename = "tmp-test-file.txt";
   int segmentOffset = 3;
@@ -91,7 +92,7 @@ TEST_CASE("find test") {
   SECTION("pattern in segment") {
     text = text + pattern;
     findOffset = 0;
-    expectedIndex = TextSegment::cMaxSize - 3 - 3;
+    expectedIndex = PatternSearch::cMaxSegmentSize - 3 - 3;
   }
 
   REQUIRE_NOTHROW(writeFile(filename, text));
@@ -104,7 +105,7 @@ TEST_CASE("find test") {
 TEST_CASE("prefix/suffix test") {
 
   string text;
-  text.resize(TextSegment::cMaxSize - 3, 'a');
+  text.resize(PatternSearch::cMaxSegmentSize - 3, 'a');
 
   string filename = "tmp-test-file.txt";
   int segmentOffset = 3;
@@ -117,7 +118,7 @@ TEST_CASE("prefix/suffix test") {
     expectedSuffix = "uvt";
     text = expectedPrefix + text + "aaa" + expectedSuffix;
     patternStartIdx = 0;
-    patternEndIdx = TextSegment::cMaxSize;
+    patternEndIdx = PatternSearch::cMaxSegmentSize;
   }
 
   SECTION("prefix/suffix half in segment") {
@@ -125,7 +126,7 @@ TEST_CASE("prefix/suffix test") {
     expectedSuffix = "uvt";
     text = "a" + expectedPrefix + text + "a" + expectedSuffix;
     patternStartIdx = 1;
-    patternEndIdx = TextSegment::cMaxSize - 1;
+    patternEndIdx = PatternSearch::cMaxSegmentSize - 1;
   }
 
   SECTION("prefix/suffix in segment") {
@@ -134,7 +135,7 @@ TEST_CASE("prefix/suffix test") {
     text[0] = 'x'; text[1] = 'y'; text[2] = 'z';
     text = "aaa" + text + expectedSuffix + "aaaaaa";
     patternStartIdx = 3;
-    patternEndIdx = TextSegment::cMaxSize - 3;
+    patternEndIdx = PatternSearch::cMaxSegmentSize - 3;
   }
 
   SECTION("borders") {
