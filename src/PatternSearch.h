@@ -18,7 +18,7 @@ public:
     const string& path, vector<string> *output);
 
   /// Format one entry of the result.
-  static void formatResult(const string& filename, int position,
+  static void formatResult(const string& filename, long long position,
     const string& prefix, const string& suffix, string *result);
 
 private:
@@ -31,7 +31,7 @@ private:
   void findPatternWorker(const string& pattern, vector<string> *output);
     
   void findPatternInText(const string& pattern, const TextSegment& text,
-    vector<int> *positions);
+    vector<long long> *positions);
 };
 
 

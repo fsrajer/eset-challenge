@@ -13,31 +13,31 @@ using std::shared_ptr;
 class TextSegment {
 public:
   TextSegment();
-  TextSegment(const string& filename, int offset);
+  TextSegment(const string& filename, long long offset);
 
   const string& filename() const;
-  int offset() const;
-  int textSize() const;
+  long long offset() const;
+  long long textSize() const;
 
   // Find substring
-  size_t find(const string& substr, int offset) const;
+  size_t find(const string& substr, size_t offset) const;
 
   void readFromFile();
   /// Using a pre-opened file
-  void readFromFile(int fileLength, std::ifstream *in);
+  void readFromFile(long long fileLength, std::ifstream *in);
 
-  string extractPrefix(int patternStartIdx);
+  string extractPrefix(long long patternStartIdx);
   /// patternEndIdx points to the first element after the pattern
-  string extractSuffix(int patternEndIdx);
+  string extractSuffix(long long patternEndIdx);
 
-  const static int cMaxSize = 10000000;
+  const static long long cMaxSize = 10000000;
   const static int cMaxPrefixSize = 3;
   const static int cMaxSuffixSize = 3;
 
 private:
   string filename_;
-  int offset_;
-  int textSize_;
+  long long offset_;
+  long long textSize_;
   int preTextSize_;
   int postTextSize_;
   shared_ptr<string> text_;

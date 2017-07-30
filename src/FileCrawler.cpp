@@ -14,7 +14,8 @@ FileCrawler::FileCrawler(int patternLength,
 
 void FileCrawler::startReaderWorker(const string& path) {
   pathsToProcess_.emplace_back(path, 0);
-  worker_ = std::make_shared<std::thread>(&FileCrawler::readSegmentsWorker, this);
+  worker_ = std::make_shared<std::thread>(
+    &FileCrawler::readSegmentsWorker, this);
 }
 
 void FileCrawler::join() {
@@ -54,14 +55,14 @@ void FileCrawler::readSegmentsFromFile(const string& filename) {
   }
 
   in.seekg(0, std::ios::end);
-  int fileLength = in.tellg();
+  long long fileLength = in.tellg();
   
-  int currOff = 0;
+  long long currOff = 0;
   while (currOff < fileLength) {
 
     // We need to take into account overlap
     // (otherwise, we wouldn't find all segments).
-    currOff = std::max(0, currOff - patternLength_ + 1);
+    currOff = std::max(0LL, currOff - patternLength_ + 1);
 
     TextSegment segment(filename, currOff);
     segment.readFromFile(fileLength, &in);

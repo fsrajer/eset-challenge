@@ -16,12 +16,13 @@ void PatternSearch::findPattern(const string& pattern,
   auto& output = *poutput;
   output.clear();
 
-  FileCrawler fc(pattern.size(), &segments_);
+  FileCrawler fc(static_cast<int>(pattern.size()), &segments_);
   fc.startReaderWorker(path);
 
   vector<std::thread> workers;
   for (int i = 0; i < cNThreads; i++) {
-    workers.emplace_back(&PatternSearch::findPatternWorker, this, pattern, &output);
+    workers.emplace_back(&PatternSearch::findPatternWorker, this, 
+      pattern, &output);
   }
 
   fc.join();
@@ -30,7 +31,7 @@ void PatternSearch::findPattern(const string& pattern,
   }
 }
 
-void PatternSearch::formatResult(const string& filename, int position,
+void PatternSearch::formatResult(const string& filename, long long position,
   const string& prefix, const string& suffix, string *presult) {
 
   auto& result = *presult;
@@ -55,15 +56,16 @@ void PatternSearch::findPatternWorker(const string& pattern,
   auto signal = segments_.removeItem(&segment);
   while (signal == ProducerConsumerBufferSignal::OK) {
 
-    vector<int> positions;
+    vector<long long> positions;
     findPatternInText(pattern, segment, &positions);
     
     vector<string> currOutput(positions.size());
     for (size_t i = 0; i < positions.size(); i++) {
-      int position = positions[i];
+      long long position = positions[i];
       formatResult(segment.filename(), segment.offset() + position,
         segment.extractPrefix(position),
-        segment.extractSuffix(position + pattern.size()), &currOutput[i]);
+        segment.extractSuffix(position + pattern.size()),
+        &currOutput[i]);
     }
 
     outputMutex_.lock();
@@ -75,7 +77,7 @@ void PatternSearch::findPatternWorker(const string& pattern,
 }
 
 void PatternSearch::findPatternInText(const string& pattern, 
-  const TextSegment& text, vector<int> *ppositions) {
+  const TextSegment& text, vector<long long> *ppositions) {
   
   auto& positions = *ppositions;
   positions.clear();
@@ -85,7 +87,7 @@ void PatternSearch::findPatternInText(const string& pattern,
 
   size_t pos = text.find(pattern, 0);
   while (pos != string::npos) {
-    positions.push_back(int(pos));
+    positions.push_back(long long(pos));
     pos = text.find(pattern, pos+1);
   }
 }
