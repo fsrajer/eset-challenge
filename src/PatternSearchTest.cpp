@@ -8,7 +8,7 @@
 TEST_CASE("findPattern test") {
   
   string pattern("");
-  string text = "abcd efg\n__abcd";
+  string text = "abcd efg\n\t_abcd";
   string filename = "tmp-test-file.txt";
   REQUIRE_NOTHROW(writeFile(filename, text));
 
@@ -29,12 +29,12 @@ TEST_CASE("findPattern test") {
     CHECK(output.size() == 2);
     PatternSearch::formatResult(filename, 0, "", "bcd", &goodOutput);
     CHECK(output[0] == goodOutput);
-    PatternSearch::formatResult(filename, 11, "\\n__", "bcd", &goodOutput);
+    PatternSearch::formatResult(filename, 11, "\\n\\t_", "bcd", &goodOutput);
     CHECK(output[1] == goodOutput);
   }
 
   SECTION("multiple characters") {
-    pattern = "efg\n__a";
+    pattern = "efg\n\t_a";
     searchEngine.findPattern(pattern, filename, &output);
     CHECK(output.size() == 1);
     PatternSearch::formatResult(filename, 5, "cd ", "bcd", &goodOutput);
@@ -48,7 +48,7 @@ TEST_CASE("findPattern test") {
   }
 
   SECTION("whitespace in the end of a file") {
-    pattern = "efg\n__abc";
+    pattern = "efg\n\t_abc";
     searchEngine.findPattern(pattern, filename, &output);
     CHECK(output.size() == 1);
     PatternSearch::formatResult(filename, 5, "cd ", "d", &goodOutput);
