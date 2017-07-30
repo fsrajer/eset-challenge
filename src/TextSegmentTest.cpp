@@ -12,8 +12,7 @@ TEST_CASE("empty constructor test") {
   TextSegment seg;
 
   CHECK(seg.filename().empty());
-  CHECK_NOTHROW(seg.text());
-  CHECK(seg.text().empty());  
+  CHECK_NOTHROW(seg.textSize() == 0);
 }
 
 TEST_CASE("readFromFile test") {
@@ -26,18 +25,18 @@ TEST_CASE("readFromFile test") {
   TextSegment seg(filename, offset);
 
   CHECK(seg.filename() == filename);
-  CHECK(seg.text().empty());
+  CHECK(seg.textSize() == 0);
   CHECK(seg.offset() == offset);
 
   SECTION("no args") {
     seg.readFromFile();
-    CHECK(seg.text() == "cdef");
+    CHECK(seg.find("cdef",0) == 0);
   }
 
   SECTION("pre-openned file") {
     std::ifstream in(filename);
     seg.readFromFile(stringLength, &in);
-    CHECK(seg.text() == "cdef");
+    CHECK(seg.find("cdef", 0) == 0);
   }
 
   CHECK_NOTHROW(deleteFile(filename));
@@ -53,7 +52,105 @@ TEST_CASE("readFromFile2 test") {
   TextSegment seg(filename, offset);
   seg.readFromFile();
 
-  CHECK(seg.text() == text);
+  CHECK(seg.find(text, 0) == 0);
 
   CHECK_NOTHROW(deleteFile(filename));
+}
+
+TEST_CASE("find test") {
+
+  string pattern("xyz");
+  string text;
+  text.resize(TextSegment::cMaxSize - 3, 'a');
+
+  string filename = "tmp-test-file.txt";
+  int segmentOffset = 3;
+  TextSegment segment(filename, segmentOffset);
+
+  int findOffset;
+  size_t expectedIndex;
+
+  SECTION("pattern outside segment") {
+    text = pattern + text;
+    findOffset = 0;
+    expectedIndex = string::npos;
+  }
+
+  SECTION("pattern outside segment2") {
+    text = text + "aaaa" + pattern;
+    findOffset = 0;
+    expectedIndex = string::npos;
+  }
+
+  SECTION("find-offset after pattern") {
+    text = "aaa" + pattern + text;
+    findOffset = 1;
+    expectedIndex = string::npos;
+  }
+
+  SECTION("pattern in segment") {
+    text = text + pattern;
+    findOffset = 0;
+    expectedIndex = TextSegment::cMaxSize - 3 - 3;
+  }
+
+  REQUIRE_NOTHROW(writeFile(filename, text));
+  segment.readFromFile();
+  CHECK(segment.find(pattern, findOffset) == expectedIndex);
+
+  REQUIRE_NOTHROW(deleteFile(filename));
+}
+
+TEST_CASE("prefix/suffix test") {
+
+  string text;
+  text.resize(TextSegment::cMaxSize - 3, 'a');
+
+  string filename = "tmp-test-file.txt";
+  int segmentOffset = 3;
+
+  string expectedPrefix, expectedSuffix;
+  int patternStartIdx, patternEndIdx;
+
+  SECTION("prefix/suffix outside segment") {
+    expectedPrefix = "xyz";
+    expectedSuffix = "uvt";
+    text = expectedPrefix + text + "aaa" + expectedSuffix;
+    patternStartIdx = 0;
+    patternEndIdx = TextSegment::cMaxSize;
+  }
+
+  SECTION("prefix/suffix half in segment") {
+    expectedPrefix = "xyz";
+    expectedSuffix = "uvt";
+    text = "a" + expectedPrefix + text + "a" + expectedSuffix;
+    patternStartIdx = 1;
+    patternEndIdx = TextSegment::cMaxSize - 1;
+  }
+
+  SECTION("prefix/suffix in segment") {
+    expectedPrefix = "xyz";
+    expectedSuffix = "uvt";
+    text[0] = 'x'; text[1] = 'y'; text[2] = 'z';
+    text = "aaa" + text + expectedSuffix + "aaaaaa";
+    patternStartIdx = 3;
+    patternEndIdx = TextSegment::cMaxSize - 3;
+  }
+
+  SECTION("borders") {
+    segmentOffset = 0;
+    expectedPrefix = "";
+    expectedSuffix = "";
+    patternStartIdx = 0;
+    patternEndIdx = text.size();
+  }
+
+  REQUIRE_NOTHROW(writeFile(filename, text));
+  TextSegment segment(filename, segmentOffset);
+  segment.readFromFile();
+  
+  CHECK(segment.extractPrefix(patternStartIdx) == expectedPrefix);
+  CHECK(segment.extractSuffix(patternEndIdx) == expectedSuffix);
+
+  REQUIRE_NOTHROW(deleteFile(filename));
 }

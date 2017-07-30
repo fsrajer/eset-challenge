@@ -67,7 +67,7 @@ void FileCrawler::readSegmentsFromFile(const string& filename) {
     segment.readFromFile(fileLength, &in);
     segments_->insertItem(segment);
 
-    currOff += segment.text().size();
+    currOff += segment.textSize();
   }
 
   in.close();

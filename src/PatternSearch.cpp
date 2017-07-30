@@ -56,14 +56,14 @@ void PatternSearch::findPatternWorker(const string& pattern,
   while (signal == ProducerConsumerBufferSignal::OK) {
 
     vector<int> positions;
-    findPatternInText(pattern, segment.text(), &positions);
+    findPatternInText(pattern, segment, &positions);
     
     vector<string> currOutput(positions.size());
     for (size_t i = 0; i < positions.size(); i++) {
       int position = positions[i];
       formatResult(segment.filename(), segment.offset() + position,
-        extractPrefix(segment.text(), position),
-        extractSuffix(segment.text(), position + pattern.size()), &currOutput[i]);
+        segment.extractPrefix(position),
+        segment.extractSuffix(position + pattern.size()), &currOutput[i]);
     }
 
     outputMutex_.lock();
@@ -75,7 +75,7 @@ void PatternSearch::findPatternWorker(const string& pattern,
 }
 
 void PatternSearch::findPatternInText(const string& pattern, 
-  const string& text, vector<int> *ppositions) {
+  const TextSegment& text, vector<int> *ppositions) {
   
   auto& positions = *ppositions;
   positions.clear();
@@ -89,14 +89,3 @@ void PatternSearch::findPatternInText(const string& pattern,
     pos = text.find(pattern, pos+1);
   }
 }
-
-string PatternSearch::extractPrefix(const string& text, int patternStartIdx) {
-  return text.substr(std::max(0, patternStartIdx - cMaxPrefixLength),
-    std::min(cMaxPrefixLength, patternStartIdx));
-}
-
-string PatternSearch::extractSuffix(const string& text, int patternEndIdx) {
-  return text.substr(patternEndIdx, 
-    std::min(cMaxSuffixLength, static_cast<int>(text.size()) - patternEndIdx));
-}
-

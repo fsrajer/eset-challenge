@@ -23,7 +23,7 @@ TEST_CASE("findPattern test") {
 
   string goodOutput;
 
-  SECTION("one character") {
+  SECTION("one character, multiple occurences") {
     pattern = "a";
     searchEngine.findPattern(pattern, filename, &output);
     CHECK(output.size() == 2);
@@ -63,22 +63,56 @@ TEST_CASE("prefix/suffix test") {
   string pattern("xyz");
   string text;
   text.resize(TextSegment::cMaxSize - 3, 'a');
-  text += (pattern + pattern);
-  string filename = "tmp-test-file.txt";
-  REQUIRE_NOTHROW(writeFile(filename, text));
 
+  string filename = "tmp-test-file.txt";
   vector<string> output;
   PatternSearch searchEngine;
-  string goodOutput;
+  string expectedPrefix, expectedSuffix;
+  int expectedOffset;
 
+  SECTION("file beginning") {
+    text = pattern + "ccc" + text;
+    expectedOffset = 0;
+    expectedPrefix = "";
+    expectedSuffix = "ccc";
+  }
+
+  SECTION("file end") {
+    text += ("ccc" + pattern);
+    expectedOffset = TextSegment::cMaxSize;
+    expectedPrefix = "ccc";
+    expectedSuffix = "";
+  }
+
+  SECTION("postfix borderline") {
+    text += (pattern + "bbb");
+    expectedOffset = TextSegment::cMaxSize - 3;
+    expectedPrefix = "aaa";
+    expectedSuffix = "bbb";
+  }
+
+  SECTION("postfix borderline2") {
+    text += ("cc" + pattern + "bbb");
+    expectedOffset = TextSegment::cMaxSize - 1;
+    expectedPrefix = "acc";
+    expectedSuffix = "bbb";
+  }
+
+  SECTION("prefix borderline") {
+    text += ("b" + pattern + "ccc");
+    expectedOffset = TextSegment::cMaxSize - 2;
+    expectedPrefix = "aab";
+    expectedSuffix = "ccc";
+  }
+
+  REQUIRE_NOTHROW(writeFile(filename, text));
+
+  string expectedOutput;
   searchEngine.findPattern(pattern, filename, &output);
-  CHECK(output.size() == 2);
-  PatternSearch::formatResult(filename, TextSegment::cMaxSize,
-    "xyz", "", &goodOutput);
-  CHECK(output[0] == goodOutput);
-  PatternSearch::formatResult(filename, TextSegment::cMaxSize - 3,
-    "aaa", "xyz", &goodOutput);
-  CHECK(output[1] == goodOutput);
+  PatternSearch::formatResult(filename, expectedOffset,
+    expectedPrefix, expectedSuffix, &expectedOutput);
+  CHECK(output.size() == 1);
+  CHECK(output[0] == expectedOutput);
 
   REQUIRE_NOTHROW(deleteFile(filename));
 }
