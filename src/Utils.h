@@ -1,3 +1,12 @@
+//-----------------------------------------------------------------------------
+/**
+* \file       Utils.h
+* \author     Filip Srajer
+* \date       July, 2017
+* \brief      Utility i/o functions implemented using windows.h functions.
+*
+*/
+//-----------------------------------------------------------------------------
 #pragma once
 
 #include <string>

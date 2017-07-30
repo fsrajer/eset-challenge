@@ -1,3 +1,12 @@
+//-----------------------------------------------------------------------------
+/**
+* \file       FileCrawler.h
+* \author     Filip Srajer
+* \date       July, 2017
+* \brief      Creates a worker thread which reads in text segments in a buffer.
+*
+*/
+//-----------------------------------------------------------------------------
 #pragma once
 
 #include <string>

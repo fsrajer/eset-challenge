@@ -1,3 +1,12 @@
+//-----------------------------------------------------------------------------
+/**
+* \file       PatternSearch.h
+* \author     Filip Srajer
+* \date       July, 2017
+* \brief      Class for search of a pattern in a file or directory.
+*
+*/
+//-----------------------------------------------------------------------------
 #pragma once
 
 #include <string>

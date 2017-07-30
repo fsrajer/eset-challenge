@@ -1,3 +1,12 @@
+//-----------------------------------------------------------------------------
+/**
+* \file       TextSegment.h
+* \author     Filip Srajer
+* \date       July, 2017
+* \brief      Segment capable of file reading, substring search and prefix/suffix extraction.
+*
+*/
+//-----------------------------------------------------------------------------
 #pragma once
 
 #include <string>
