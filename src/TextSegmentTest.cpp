@@ -12,8 +12,7 @@ TEST_CASE("empty constructor test") {
   TextSegment seg;
 
   CHECK(seg.filename().empty());
-  CHECK_NOTHROW(seg.text());
-  CHECK(seg.text().empty());  
+  CHECK_NOTHROW(seg.textSize() == 0);
 }
 
 TEST_CASE("readFromFile test") {
@@ -26,18 +25,18 @@ TEST_CASE("readFromFile test") {
   TextSegment seg(filename, offset);
 
   CHECK(seg.filename() == filename);
-  CHECK(seg.text().empty());
+  CHECK(seg.textSize() == 0);
   CHECK(seg.offset() == offset);
 
   SECTION("no args") {
     seg.readFromFile();
-    CHECK(seg.text() == "cdef");
+    CHECK(seg.find("cdef",0) == 0);
   }
 
   SECTION("pre-openned file") {
     std::ifstream in(filename);
     seg.readFromFile(stringLength, &in);
-    CHECK(seg.text() == "cdef");
+    CHECK(seg.find("cdef", 0) == 0);
   }
 
   CHECK_NOTHROW(deleteFile(filename));
@@ -53,7 +52,7 @@ TEST_CASE("readFromFile2 test") {
   TextSegment seg(filename, offset);
   seg.readFromFile();
 
-  CHECK(seg.text() == text);
+  CHECK(seg.find(text, 0) == 0);
 
   CHECK_NOTHROW(deleteFile(filename));
 }

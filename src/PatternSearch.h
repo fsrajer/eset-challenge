@@ -29,15 +29,9 @@ private:
   std::mutex outputMutex_;
 
   void findPatternWorker(const string& pattern, vector<string> *output);
-
-  const static int cMaxPrefixLength = 3;
-  const static int cMaxSuffixLength = 3;
-  
-  void findPatternInText(const string& pattern, const string& text,
+    
+  void findPatternInText(const string& pattern, const TextSegment& text,
     vector<int> *positions);
-  string extractPrefix(const string& text, int patternStartIdx);
-  /// patternEndIdx points to the first element after the pattern
-  string extractSuffix(const string& text, int patternEndIdx);
 };
 
 

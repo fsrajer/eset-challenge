@@ -25,7 +25,7 @@ TEST_CASE("read test") {
     TextSegment dummy;
     CHECK(segments.removeItem(&dummy) == 
       ProducerConsumerBufferSignal::SHUTDOWN);
-    CHECK(dummy.text().empty());
+    CHECK(dummy.textSize() == 0);
   }
 
   SECTION("non-existent dir") {
@@ -48,13 +48,13 @@ TEST_CASE("read test") {
       ProducerConsumerBufferSignal::OK);
     CHECK(segments.removeItem(&segment) ==
       ProducerConsumerBufferSignal::OK);
-    CHECK(segment.text() == text.substr(
+    CHECK(segment.find(text.substr(
       TextSegment::cMaxSize - pattern.size() + 1,
-      TextSegment::cMaxSize));
+      TextSegment::cMaxSize), 0) == 0);
 
     CHECK(segments.removeItem(&segment) ==
       ProducerConsumerBufferSignal::OK);
-    CHECK(segment.text() == text.substr(0, TextSegment::cMaxSize));
+    CHECK(segment.find(text.substr(0, TextSegment::cMaxSize), 0) == 0);
 
     CHECK(segments.removeItem(&segment) ==
       ProducerConsumerBufferSignal::SHUTDOWN);
