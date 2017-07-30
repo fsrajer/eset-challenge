@@ -42,3 +42,18 @@ TEST_CASE("readFromFile test") {
 
   CHECK_NOTHROW(deleteFile(filename));
 }
+
+TEST_CASE("readFromFile2 test") {
+
+  string filename = "tmp-test-file.txt";
+  string text = "a\nb\n\tc";
+  REQUIRE_NOTHROW(writeFile(filename, text));
+  int offset = 0;
+
+  TextSegment seg(filename, offset);
+  seg.readFromFile();
+
+  CHECK(seg.text() == text);
+
+  CHECK_NOTHROW(deleteFile(filename));
+}
