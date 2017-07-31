@@ -1,6 +1,6 @@
 # ESET Challenge
 
-You can find the project here:
+You can find the project description here:
 https://join.eset.com/en/challenges/c-developer
 
 ## Functionality
