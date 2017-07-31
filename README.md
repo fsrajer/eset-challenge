@@ -1,4 +1,4 @@
-# Eset challenge
+# ESET Challenge
 
 You can find the project here:
 https://join.eset.com/en/challenges/c-developer
